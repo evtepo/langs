@@ -1,0 +1,11 @@
+{% extends 'home/base.html' %}
+{% block content %}
+<h2>{{ random_lang.title }}</h2>
+
+
+{% if random_lang.image %}
+    <p><img src="{{random_lang.image.url}}" class="img-article-left"></p>
+{% endif %}
+
+{{ random_lang.description|linebreaks }}
+{% endblock %}

@@ -1,0 +1,66 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>HTML & CSS практика от AVIS TV</title>
+
+	<!-- Bootstrap reboot (для сброса стилей) -->
+	<link rel="stylesheet" href="{% static 'home/libs/bootstrap-reboot.min.css' %}">
+
+	<!-- Bootstrap сетка -->
+	<link rel="stylesheet" href="{% static 'home/libs/bootstrap-grid.min.css' %}">
+
+	<!-- Шрифты с Google Fonts -->
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+	<!-- Стили сайта -->
+	<link rel="stylesheet" href="{% static 'home/css/styles.css' %}" type="text/css">
+</head>
+<body>
+
+	<nav class="navbar">
+        <div class="container">
+            <a href="{% url 'home' %}" class="navbar-brand">Langs</a>
+
+            <div class="navbar-wrap">
+                <ul class="navbar-menu">
+                    <li class="li"><a href="{% url 'home' %}">Главная</a></li>
+                    <li class="li"><a href="{% url 'profile' %}">Профиль</a></li>
+                    <li class="li"><a href="{% url 'random' %}">Рандомный язык</a></li>
+                </ul>
+                <a href="{% url 'contacts' %}" class="callback">Контакты</a>
+            </div>
+        </div>
+    </nav>
+	
+    <main>
+        <div class="sidebar">
+            <div class="sidebar-section">
+                {% if cat_selected == 0 %}
+                    <li class="li">Категории</li>
+                {% else %}
+                    <li class="li"><a href="{% url 'home' %}">Категории</a></li>
+                {% endif %}
+                {% for c in cats %}
+                    {% if c.pk == cat_selected %}
+                        <li class="li">{{ c.name }}</li>
+                    {% else %}
+                        <li class="li"><a href="{{ c.get_absolute_url }}">{{ c.name }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                </div>
+            </div>    
+        </div>
+
+        <div class="content-text">
+            {% block content %}
+            {% endblock %}
+        </div>
+
+    </main>
+</body>
+</html>

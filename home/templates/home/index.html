@@ -1,0 +1,14 @@
+{% extends 'home/base.html' %}
+{% block content %}
+    {% for p in posts %}
+        {% if not cat_selected %}
+            Category: {{ p.category }}. Time updated: {{ p.time_update|date:"d-m-Y H:i:s" }}
+        {% else %}
+            Time updated: {{ p.time_update|date:"d-m-Y H:i:s" }}
+        {% endif %}
+        <h2>{{ p.title }}</h2>      
+        {{ p.description|linebreaks|truncatewords:50 }}
+        <div class="clear"></div>
+        <p class="link-read-post"><a href="{{ p.get_absolute_url }}">Читать пост</a></p>
+    {% endfor %}
+{% endblock %}

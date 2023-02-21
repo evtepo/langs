@@ -1,0 +1,181 @@
+/**
+ * Базовые стили для всего сайта
+ */
+
+body {
+	position: relative;
+	font-family: 'Noto Sans', sans-serif;
+	font-size: 16px;
+	line-height: 1.4;
+	color: #000;
+	min-width: 320px;
+	overflow-x: hidden;
+	height: auto;
+}
+
+/**
+ * Стили хедера
+ */
+
+.navbar {
+    width: 100%;
+    height: 70px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, .1);
+    background-color: skyblue;
+}
+
+.navbar .container {
+    height: inherit;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/**
+ * Стили ссылок
+ */
+.navbar-menu {
+    list-style-type: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+.navbar-menu li {
+    display: inline-block;
+}
+
+.navbar-menu li a {
+    display: inline-block;
+    color: #000;
+    opacity: 0.7;
+    text-decoration: none;
+    padding: 10px;
+    transition: all .2s ease-in-out;
+}
+
+/**
+ * Смена цвета/прозрачности при наведении
+ */
+.navbar-menu li a:hover {
+    opacity: 1;
+}
+
+.navbar-wrap {
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+.callback {
+    margin-left: 30px;
+    padding: 10px 30px;
+    background-color: rgb(54, 45, 42);
+    border-radius: 100px;
+    color: rgb(255, 166, 0);
+    text-decoration: none;
+    box-shadow: 0 4px 6px rgba(255, 166, 0, .2);
+    transition: all .2s ease-in-out;
+}
+
+.callback:hover {
+    transform: scale(1.04);
+    color: rgb(255, 166, 0);
+    box-shadow: 0 9px 9px rgba(255, 166, 0, .5);
+}
+
+/**
+ * Стили логотипа
+ */
+.navbar-brand {
+    font-weight: 700;
+    font-size: 26px;
+    text-decoration: none;
+    color: rgb(54, 45, 42);
+}
+
+.navbar-brand:hover {
+    color: rgb(255, 166, 0);
+    transition: all .2s ease-in-out;
+}
+
+/**
+ * Стили для sidebar
+ */
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 630px;
+    width: 150px;
+    border-right: 1px solid #D7DBDD;
+    background-color: #fcfdfd;
+    padding: 10px;
+}
+
+.sidebar a{
+    display: inline-block;
+    color: #000;
+    opacity: 0.7;
+    text-decoration: none;
+    padding: 10px;
+    transition: all .2s ease-in-out;
+}
+
+.sidebar-section {
+    list-style-type: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+.sidebar-section li a{
+    cursor: pointer;
+    padding: 8px 10px;
+    font-size: 18px;
+    color:black;
+}
+
+.sidebar-section li {
+    display: inline-block;
+}
+
+.sidebar:hover {
+    background-color: #eef3f5;
+    border-radius: 4px;
+}
+
+/**
+ * Стили для content
+ */
+.content-text {
+	margin: 60px 0 0 30px;
+	color: #000;
+	font-size: 20px;
+	font-family: Yandex Sans Display Light;
+}
+
+.content-text h1 {
+    font-size: 32px;
+}
+
+p.link-read-post {
+	text-align: right;
+}
+
+p.link-read-post a {
+	padding: 10px;
+	min-width: 100px;
+	background: #333671;
+	color: #fff;
+	text-decoration: none;
+}
+
+.clear {
+    clear: both;
+}
+
+/**
+ * main
+ */
+
+main {
+    display: flex;
+}
