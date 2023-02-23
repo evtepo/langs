@@ -5,7 +5,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>HTML & CSS практика от AVIS TV</title>
+	<title>{{ title }}</title>
 
 	<!-- Bootstrap reboot (для сброса стилей) -->
 	<link rel="stylesheet" href="{% static 'home/libs/bootstrap-reboot.min.css' %}">
@@ -40,17 +40,9 @@
     <main>
         <div class="sidebar">
             <div class="sidebar-section">
-                {% if cat_selected == 0 %}
-                    <li class="li">Категории</li>
-                {% else %}
-                    <li class="li"><a href="{% url 'home' %}">Категории</a></li>
-                {% endif %}
+                <li class="li"><a href="{% url 'home' %}">Категории</a></li>
                 {% for c in cats %}
-                    {% if c.pk == cat_selected %}
-                        <li class="li">{{ c.name }}</li>
-                    {% else %}
-                        <li class="li"><a href="{{ c.get_absolute_url }}">{{ c.name }}</a></li>
-                    {% endif %}
+                    <li class="li"><a href="{{ c.get_absolute_url }}">{{ c.name }}</a></li>
                 {% endfor %}
                 </div>
             </div>    

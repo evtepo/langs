@@ -22,10 +22,10 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index, name='home'),
+    path('', views.LanguagesListView.as_view(), name='home'),
     path('signin/', views.signin, name='signin'),
-    path('post/<slug:post_slug>/', views.show_post, name='post'),
-    path('category/<slug:cat_slug>/', views.show_category, name='category'),
+    path('post/<slug:post_slug>/', views.PostView.as_view(), name='post'),
+    path('category/<slug:cat_slug>/', views.CategoryLanguages.as_view(), name='category'),
     path('profile/', views.profile, name='profile'),
     path('random/', views.random, name='random'),
     path('contacts/', views.contacts, name='contacts'),
