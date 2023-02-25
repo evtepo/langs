@@ -3,20 +3,19 @@ from django.http import HttpResponseNotFound, HttpResponse, Http404
 from django.views.generic import ListView, DetailView
 
 from .models import *
-
+from .utils import *
 from random import choice
 
 
-class LanguagesListView(ListView):  #  Отображение всех постов из модели Languages
+class LanguagesListView(DataMixin, ListView):  #  Отображение всех постов из модели Languages
     model = Languages
     template_name = 'home/index.html'
     context_object_name = 'posts'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Langs'
-        context['cats'] = Category.objects.all()
-        return context
+        context_from_mix = self.get_user_context(title='Langs')
+        return dict(list(context.items()) + list(context_from_mix.items()))
 
     def get_queryset(self):
         return Languages.objects.all()
@@ -26,7 +25,7 @@ def signin(request):  #  Вход
     return render(request, 'home/signin.html')
 
 
-class CategoryLanguages(ListView):  #  Отображение постов по категориям 
+class CategoryLanguages(DataMixin, ListView):  #  Отображение постов по категориям 
     model = Languages
     template_name = 'home/index.html'
     context_object_name = 'posts'
@@ -34,15 +33,14 @@ class CategoryLanguages(ListView):  #  Отображение постов по 
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Категория: ' + str(context['posts'][0].category)
-        context['cats'] = Category.objects.all()
-        return context
+        context_from_mix = self.get_user_context(title='Категоря: ' + str(context['posts'][0].category))
+        return dict(list(context.items()) + list(context_from_mix.items()))
 
     def get_queryset(self):
         return Languages.objects.filter(category__slug=self.kwargs['cat_slug'], is_published=True)
 
 
-class PostView(DetailView): # Отображение определенного поста
+class PostView(DataMixin, DetailView): # Отображение определенного поста
     model = Languages
     template_name = 'home/post.html'
     slug_url_kwarg = 'post_slug'
@@ -50,9 +48,8 @@ class PostView(DetailView): # Отображение определенного 
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = context['post']
-        context['cats'] = Category.objects.all()      
-        return context
+        context_from_mix = self.get_user_context(title=context['post'])
+        return dict(list(context.items()) + list(context_from_mix.items()))    
 
 
 def profile(request):  #  Профиль
