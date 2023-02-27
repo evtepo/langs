@@ -1,38 +1,31 @@
-"""soap URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/4.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
 from django.conf.urls.static import static
+from django.views.decorators.cache import cache_page
 
 from home import views
 from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.LanguagesListView.as_view(), name='home'),
-    path('signin/', views.signin, name='signin'),
-    path('post/<slug:post_slug>/', views.PostView.as_view(), name='post'),
-    path('category/<slug:cat_slug>/', views.CategoryLanguages.as_view(), name='category'),
+    path('', cache_page(60 * 60)(views.LanguagesListView.as_view()), name='home'),
+    path('signin/', views.LoginUser.as_view(), name='signin'),
+    path('post/<slug:post_slug>/', cache_page(60 * 60)(views.PostView.as_view()), name='post'),
+    path('category/<slug:cat_slug>/', cache_page(60 * 60)(views.CategoryLanguages.as_view()), name='category'),
     path('profile/', views.profile, name='profile'),
+    path('logout/', views.logout_user, name='logout'),
     path('random/', views.random, name='random'),
     path('contacts/', views.contacts, name='contacts'),
+    path('registration/', views.RegisterUsers.as_view(), name='registration')
 
 ]
 
 if settings.DEBUG:
+    import debug_toolbar
+
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     

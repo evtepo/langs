@@ -1,31 +1,34 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404
 from django.http import HttpResponseNotFound, HttpResponse, Http404
-from django.views.generic import ListView, DetailView
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.views import LoginView
+from django.contrib.auth import logout, login
 
+from .forms import *
 from .models import *
 from .utils import *
 from random import choice
 
 
-class LanguagesListView(DataMixin, ListView):  #  Отображение всех постов из модели Languages
+#  Отображение всех постов из модели Languages
+class LanguagesListView(DataMixin, ListView):
     model = Languages
     template_name = 'home/index.html'
     context_object_name = 'posts'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context_from_mix = self.get_user_context(title='Langs')
-        return dict(list(context.items()) + list(context_from_mix.items()))
+        context_from_mixin = self.get_user_context(title='Langs')
+        return dict(list(context.items()) + list(context_from_mixin.items()))
 
     def get_queryset(self):
-        return Languages.objects.all()
+        return Languages.objects.all().select_related('category')
 
 
-def signin(request):  #  Вход
-    return render(request, 'home/signin.html')
-
-
-class CategoryLanguages(DataMixin, ListView):  #  Отображение постов по категориям 
+#  Отображение постов по категориям 
+class CategoryLanguages(DataMixin, ListView):
     model = Languages
     template_name = 'home/index.html'
     context_object_name = 'posts'
@@ -33,14 +36,16 @@ class CategoryLanguages(DataMixin, ListView):  #  Отображение пос�
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context_from_mix = self.get_user_context(title='Категоря: ' + str(context['posts'][0].category))
-        return dict(list(context.items()) + list(context_from_mix.items()))
-
+        c = Category.objects.get(slug=self.kwargs['cat_slug'])
+        context_from_mixin = self.get_user_context(title='Категоря: ' + str(c.name))
+        return dict(list(context.items()) + list(context_from_mixin.items()))
+    
     def get_queryset(self):
-        return Languages.objects.filter(category__slug=self.kwargs['cat_slug'], is_published=True)
+        return Languages.objects.filter(category__slug=self.kwargs['cat_slug'], is_published=True).select_related('category')
 
 
-class PostView(DataMixin, DetailView): # Отображение определенного поста
+# Отображение определенного поста
+class PostView(DataMixin, DetailView):
     model = Languages
     template_name = 'home/post.html'
     slug_url_kwarg = 'post_slug'
@@ -48,26 +53,66 @@ class PostView(DataMixin, DetailView): # Отображение определе
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context_from_mix = self.get_user_context(title=context['post'])
-        return dict(list(context.items()) + list(context_from_mix.items()))    
+        context_from_mixin = self.get_user_context(title=context['post'])
+        return dict(list(context.items()) + list(context_from_mixin.items()))    
 
 
-def profile(request):  #  Профиль
+#  Профиль
+def profile(request):
     return HttpResponse(f'Профиль')
 
 
-def random(request):  #  Рандомный язык
+#  Рандомный язык
+def random(request):
     random_lang = choice(Languages.objects.all())
+    cats = Category.objects.all()
     context = {
-        'random_lang': random_lang
+        'random_lang': random_lang,
+        'cats': cats,
     }
 
     return render(request, 'home/random.html', context=context)
 
 
-def contacts(request):  #  Контакты
+#  Контакты
+def contacts(request):
     return HttpResponse(f'Contacts')
 
 
-def pageNotFound(request, exception):  #  Страница не найдена
+#  Регистрация
+class RegisterUsers(DataMixin, CreateView):
+    form_class = RegisterUserForm
+    template_name = 'home/registration.html'
+    success_url = reverse_lazy('signin')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_user_context(**kwargs)
+        context_from_mixin = self.get_user_context(title="Регистрация")
+        return dict(list(context.items()) + list(context_from_mixin.items()))
+    
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('home')
+    
+
+# Вход
+class LoginUser(DataMixin, LoginView):
+    form_class = AuthenticationForm
+    template_name = 'home/signin.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context_from_mixin = self.get_user_context(title='Авторизация')
+        return dict(list(context.items()) + list(context_from_mixin.items()))
+    
+
+#  Выход
+def logout_user(request):
+    logout(request)
+    return redirect('signin')
+
+
+#  Страница не найдена
+def pageNotFound(request, exception):
     return HttpResponseNotFound(f'Страница не найдена')

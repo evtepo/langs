@@ -28,8 +28,11 @@
 
             <div class="navbar-wrap">
                 <ul class="navbar-menu">
-                    <li class="li"><a href="{% url 'home' %}">Главная</a></li>
-                    <li class="li"><a href="{% url 'profile' %}">Профиль</a></li>
+                    {% if request.user.is_authenticated %}
+                        <li class="li"><a href="{% url 'profile' %}">{{ user.username }}</a> | <a href="{% url 'logout' %}">Выйти</a></li>
+                    {% else %}
+                        <li class="li"><a href="{% url 'signin' %}">Войти</a> | <a href="{% url 'registration' %}">Регистрация</a></li>
+                    {% endif %}
                     <li class="li"><a href="{% url 'random' %}">Рандомный язык</a></li>
                 </ul>
                 <a href="{% url 'contacts' %}" class="callback">Контакты</a>
@@ -51,6 +54,23 @@
         <div class="content-text">
             {% block content %}
             {% endblock %}
+            {% if page_obj.has_other_pages %}
+            <nav class="list-pages">
+                <ul>
+                    {% for p in paginator.page_range %}
+                    {% if page_obj.number == p %}
+                    <li class="page-num">
+                        <a href="?page={{ p }}">{{ p }}</a>
+                    </li>
+                    {% else %}
+                    <li class="page-num">
+                        <a href="?page={{ p }}">{{ p }}</a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </nav>
+            {% endif %}
         </div>
 
     </main>
