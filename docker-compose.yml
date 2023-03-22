@@ -1,0 +1,29 @@
+version: '2.15.1'
+
+services:
+  django:
+    build: 
+      context: ./
+      dockerfile: Dockerfile
+    command:  bash -c "python /app/manage.py migrate --noinput &&
+              python /app/manage.py runserver 0.0.0.0.8000"
+    volumes:
+      - .:/app
+    ports:
+      - '8000:8000'
+    depends_on:
+      - db
+    env_file:
+      - ./.env
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DATABASE: 'langs'
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'tanosi99'
+    restart: always
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+volumes:
+  pg_data:

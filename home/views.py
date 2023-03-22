@@ -12,7 +12,6 @@ from .utils import *
 from random import choice
 
 
-#  Отображение всех постов из модели Languages
 class LanguagesListView(DataMixin, ListView):
     model = Languages
     template_name = 'home/index.html'
@@ -27,7 +26,6 @@ class LanguagesListView(DataMixin, ListView):
         return Languages.objects.all().select_related('category')
 
 
-#  Отображение постов по категориям 
 class CategoryLanguages(DataMixin, ListView):
     model = Languages
     template_name = 'home/index.html'
@@ -37,14 +35,13 @@ class CategoryLanguages(DataMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         c = Category.objects.get(slug=self.kwargs['cat_slug'])
-        context_from_mixin = self.get_user_context(title='Категоря: ' + str(c.name))
+        context_from_mixin = self.get_user_context(title='Категория: ' + str(c.name))
         return dict(list(context.items()) + list(context_from_mixin.items()))
     
     def get_queryset(self):
         return Languages.objects.filter(category__slug=self.kwargs['cat_slug'], is_published=True).select_related('category')
 
 
-# Отображение определенного поста
 class PostView(DataMixin, DetailView):
     model = Languages
     template_name = 'home/post.html'
@@ -57,29 +54,26 @@ class PostView(DataMixin, DetailView):
         return dict(list(context.items()) + list(context_from_mixin.items()))    
 
 
-#  Профиль
 def profile(request):
     return HttpResponse(f'Профиль')
 
 
-#  Рандомный язык
 def random(request):
     random_lang = choice(Languages.objects.all())
     cats = Category.objects.all()
     context = {
         'random_lang': random_lang,
         'cats': cats,
+        'title': 'Random language'
     }
 
     return render(request, 'home/random.html', context=context)
 
 
-#  Контакты
 def contacts(request):
     return HttpResponse(f'Contacts')
 
 
-#  Регистрация
 class RegisterUsers(DataMixin, CreateView):
     form_class = RegisterUserForm
     template_name = 'home/registration.html'
@@ -96,7 +90,6 @@ class RegisterUsers(DataMixin, CreateView):
         return redirect('home')
     
 
-# Вход
 class LoginUser(DataMixin, LoginView):
     form_class = AuthenticationForm
     template_name = 'home/signin.html'
@@ -107,12 +100,10 @@ class LoginUser(DataMixin, LoginView):
         return dict(list(context.items()) + list(context_from_mixin.items()))
     
 
-#  Выход
 def logout_user(request):
     logout(request)
     return redirect('signin')
 
 
-#  Страница не найдена
 def pageNotFound(request, exception):
     return HttpResponseNotFound(f'Страница не найдена')
