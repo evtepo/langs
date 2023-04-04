@@ -16,7 +16,7 @@ from dotenv import load_dotenv, find_dotenv
 
 load_dotenv(find_dotenv())
 
-HOST = os.getenv('ALLOWED_HOSTS')
+HOST = os.getenv('ALLOWED_HOSTS').split(" ")
 POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -28,7 +28,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [HOST]
+ALLOWED_HOSTS = [*HOST]
 
 # Application definition
 
@@ -81,7 +81,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('POSTGRES_NAME'),
-        'USER': os.getenv('POSTGRES_USER'),
+        'USER': os.getenv('POSTGRES_USER', 'postgres'),
         'PASSWORD': POSTGRES_PASSWORD,
         'HOST': os.getenv('POSTGRES_HOST'),
         'PORT': os.getenv('PORT')
